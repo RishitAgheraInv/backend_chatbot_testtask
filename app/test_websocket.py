@@ -11,7 +11,7 @@ def create_test_user():
     """Create a test user"""
     user_data = {
         "username": f"testuser_{asyncio.get_event_loop().time()}",
-        "email": "test@example.com"
+        "email": f"test{asyncio.get_event_loop().time()}@example.com"
     }
 
     response = requests.post(f"{BASE_URL}/users/", json=user_data)

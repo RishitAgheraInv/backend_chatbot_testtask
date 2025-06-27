@@ -1,0 +1,15 @@
+services:
+  chatbot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rishitagherainv/backend_test_task:latest
+    container_name: backend_test_task
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    restart: always
+    
+    
+

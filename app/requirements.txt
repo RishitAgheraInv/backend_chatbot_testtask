@@ -16,3 +16,6 @@ langgraph-sdk==0.1.70
 langsmith==0.3.42
 python-dotenv==1.0.0
 python-multipart==0.0.6
+pytest==8.4.1
+pytest-asyncio==0.23.6
+websockets==15.0.1

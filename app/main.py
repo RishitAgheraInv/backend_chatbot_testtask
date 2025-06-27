@@ -59,13 +59,13 @@ async def root():
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     """Create a new user"""
     existing_user = UserCRUD.get_user_by_email(db, user.email)
-    if existing_user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="email already registered"
-        )
+    # if existing_user:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_400_BAD_REQUEST,
+    #         detail="email already registered"
+    #     )
 
-    return UserCRUD.create_user(db, user)
+    return existing_user if existing_user else UserCRUD.create_user(db, user)
 
 
 @app.get("/users/{username}", response_model=UserResponse)
@@ -109,6 +109,17 @@ async def get_user_conversations(user_id: int, db: Session = Depends(get_db)):
 
     return ConversationCRUD.get_user_conversations(db, user_id)
 
+@app.get("/users/", response_model=List[UserResponse])
+async def get_user_list(user_id: int, db: Session = Depends(get_db)):
+    """Get all conversations for a user"""
+    user = UserCRUD.get_user_by_id(db, user_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+
+    return ConversationCRUD.get_user_conversations(db, user_id)
 
 @app.get("/conversations/{conversation_id}/messages/", response_model=List[MessageResponse])
 async def get_conversation_messages(conversation_id: int, db: Session = Depends(get_db)):
