@@ -1,20 +1,23 @@
-from langgraph.graph import StateGraph, END
-from langchain.schema import HumanMessage, AIMessage
+""" chatbot agent class"""
 from typing import Dict, List, Any
-import os
+
 from dotenv import load_dotenv
+from langchain.schema import HumanMessage, AIMessage
 from langchain_groq import ChatGroq
+from langgraph.graph import StateGraph, END
 
 load_dotenv()
 
 
 class ChatbotState:
+    """chatbot state class"""
     def __init__(self):
         self.messages: List[Dict[str, str]] = []
         self.current_response: str = ""
 
 
 def create_chatbot_graph():
+    """ langgraph creation"""
     # Initialize the LLM
     llm = ChatGroq(model="llama3-8b-8192", temperature=0.3)
 
@@ -44,9 +47,9 @@ def create_chatbot_graph():
             "current_response": response.content
         }
 
-    def should_continue(state: Dict[str, Any]) -> str:
-        """Determine if we should continue or end"""
-        return END
+    # def should_continue(state: Dict[str, Any]) -> str:
+    #     """Determine if we should continue or end"""
+    #     return END
 
     # Create the graph
     workflow = StateGraph(dict)
@@ -62,6 +65,7 @@ def create_chatbot_graph():
 
 
 class StreamingChatbot:
+    """ Streaming chatbot"""
     def __init__(self):
         self.llm = ChatGroq(model="llama3-8b-8192", temperature=0.7)
 

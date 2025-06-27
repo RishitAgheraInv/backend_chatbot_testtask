@@ -59,10 +59,17 @@ Follow these steps to get the backend running locally:
 6. **Run the server**
 
    ```bash
-   python main.py
+   python app/main.py
    ```
 
-   The server should start on `http://localhost:8000`
+   The server should start on `http://0.0.0.0:8000`
+
+7. **Using Docker (optional)**
+   ```bash
+   docker compose pull
+   docker compose up -d 
+   ```
+   You might need to change database host so that docker container can access local database.
 
 ---
 
@@ -104,11 +111,16 @@ GET /ws/users/{user_id}/status
 To test the WebSocket setup and API functionality, simply run:
 
 ```bash
-python test_websocket.py
+python app/test_websocket.py
 ```
 
 This script will connect to the chat WebSocket and simulate sending and receiving a message.
 
+---
+For unit testing using pytest, simply run:
+```bash
+python app/test_main.py
+```
 ---
 
 ## 🔗 Groq API Usage

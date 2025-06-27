@@ -1,20 +1,22 @@
-from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect
-from fastapi.responses import StreamingResponse
-from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
-from contextlib import asynccontextmanager
-import json
+"""main fastapi file """
 import asyncio
+import json
+from contextlib import asynccontextmanager
 from typing import List
 
+from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
+from sqlalchemy.orm import Session
+
+from chatbot import StreamingChatbot
+from crud import UserCRUD, ConversationCRUD, MessageCRUD
 from database import get_db, engine
-from models import Base, User, Conversation, Message
+from models import Base
 from schemas import (
     UserCreate, UserResponse, ConversationCreate, ConversationResponse,
     MessageResponse, ChatRequest, ChatResponse
 )
-from crud import UserCRUD, ConversationCRUD, MessageCRUD
-from chatbot import StreamingChatbot
 from websocket_manager import manager
 
 # Create tables
@@ -23,6 +25,8 @@ Base.metadata.create_all(bind=engine)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """ lifespan """
+    type(app)
     # Startup
     print("Starting up the chatbot application...")
     yield
@@ -52,6 +56,7 @@ chatbot = StreamingChatbot()
 
 @app.get("/")
 async def root():
+    """ root api """
     return {"message": "Streaming Chatbot API is running!"}
 
 
@@ -109,6 +114,7 @@ async def get_user_conversations(user_id: int, db: Session = Depends(get_db)):
 
     return ConversationCRUD.get_user_conversations(db, user_id)
 
+
 @app.get("/users/", response_model=List[UserResponse])
 async def get_user_list(user_id: int, db: Session = Depends(get_db)):
     """Get all conversations for a user"""
@@ -120,6 +126,7 @@ async def get_user_list(user_id: int, db: Session = Depends(get_db)):
         )
 
     return ConversationCRUD.get_user_conversations(db, user_id)
+
 
 @app.get("/conversations/{conversation_id}/messages/", response_model=List[MessageResponse])
 async def get_conversation_messages(conversation_id: int, db: Session = Depends(get_db)):
@@ -174,7 +181,9 @@ async def stream_chat(
         full_response = ""
 
         # Send conversation ID first
-        yield f"data: {json.dumps({'type': 'conversation_id', 'conversation_id': conversation.id})}\n\n"
+        yield f"data: " \
+              f"{json.dumps({'type': 'conversation_id', 'conversation_id': conversation.id})}" \
+              f"\n\n"
 
         try:
             async for chunk_data in chatbot.stream_response(messages):
@@ -283,7 +292,7 @@ async def websocket_endpoint(websocket: WebSocket, user_id: int):
         # Send welcome message
         await manager.send_message({
             "type": "connection",
-            "message": f"Connected to chat server",
+            "message": "Connected to chat server",
             "user_id": user_id
         }, websocket)
 
@@ -296,7 +305,8 @@ async def websocket_endpoint(websocket: WebSocket, user_id: int):
             if "message" not in message_data:
                 await manager.send_message({
                     "type": "error",
-                    "message": "Invalid message format. Expected: {\"message\": \"text\", \"conversation_id\": optional}"
+                    "message": "Invalid message format. Expected:"
+                               " {\"message\": \"text\", \"conversation_id\": optional}"
                 }, websocket)
                 continue
 
