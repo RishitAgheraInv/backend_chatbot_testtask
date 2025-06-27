@@ -155,6 +155,10 @@ LangGraph enables structured and memory-aware agent workflows, making it ideal f
 
 It brings clarity to complex agent flows and makes your chatbot much more than a one-shot LLM responder.
 
+## Architecture Diagram
+
+![Architecture Diagram](./existing_agent_flow.png)
+
 ---
 
 ## 📌 Notes
@@ -168,6 +172,7 @@ It brings clarity to complex agent flows and makes your chatbot much more than a
 ## 🔮 Future Enhancements
 
 * ⚙️ **Easily add multiple agents** and build modular, context-aware chatbot flows with LangGraph
+![Architecture Diagram](./future_enhancements_graph.png)
 * 🔐 **Add user authentication** to manage user access and session security
 * ☁️ Deploy using Docker, Kubernetes, or serverless stacks
 * 🧠 Add persistent long-term memory and custom knowledge bases
